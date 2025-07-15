@@ -1,12 +1,11 @@
-# 🧠 Smart Tab Manager - Stop Tab Chaos!
+#  Smart Tab Manager - Stop Tab Chaos!
 
 **The Problem:** You have 47 tabs open. Half are YouTube videos you'll "watch later" (spoiler: you won't). The other half are work docs buried somewhere. Sound familiar?
 
 **The Solution:** This Chrome extension uses AI to automatically sort your tabs into "Important" (work stuff) and "Useless" (that 3rd cat video today) - then lets you close the junk with one click!
 
-![Extension Demo](https://via.placeholder.com/600x300/4285F4/white?text=Smart+Tab+Manager+Demo)
 
-## 🎯 What This Actually Does
+##  What This Actually Does
 
 - **Instantly categorizes** all your open tabs (no setup needed!)
 - **Shows funny stats** like "You have 12 YouTube tabs open for 3 hours 😅"
@@ -14,7 +13,7 @@
 - **Learns from you** - click ❌/✅ to train the AI on your preferences
 - **Gets smarter over time** - remembers your corrections and patterns
 
-## 🚀 Quick Start (5 minutes)
+##  Quick Start (5 minutes)
 
 ### Step 1: Install the Extension
 ```bash
