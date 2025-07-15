@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .stats {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .tab-category {
+      margin-bottom: 15px;
+    }
+    .tab-category h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+    .important { border-left: 4px solid #4CAF50; }
+    .useless { border-left: 4px solid #FF9800; }
+    .tab-item {
+      padding: 8px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .close-btn {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .train-btn {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 10px;
+      margin-left: 5px;
+      float: right;
+    }
+    .settings-btn {
+      background: #666;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>🧠 Smart Tab Manager</h2>
+  </div>
+  
+  <div class="stats" id="stats">
+    <h3>📊 Your Tab Stats</h3>
+    <div id="statsContent">Loading...</div>
+  </div>
+  
+  <div class="tab-category important">
+    <h3>✅ Important Tabs</h3>
+    <div id="importantTabs">Loading...</div>
+  </div>
+  
+  <div class="tab-category useless">
+    <h3>🎮 Useless Tabs</h3>
+    <div id="uselessTabs">Loading...</div>
+    <button class="close-btn" id="closeUseless">Close All Useless Tabs</button>
+  </div>
+  
+  <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+    <button class="settings-btn" id="showSettings">⚙️ Smart Settings</button>
+    <button class="settings-btn" id="resetLearning">🧠 Reset Learning</button>
+  </div>
+  
+  <div id="settingsPanel" style="display: none; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+    <h4>🤖 AI Training</h4>
+    <p style="font-size: 11px; color: #666;">Click ❌ next to important tabs wrongly categorized, or ✅ next to useless tabs that are actually important. The AI learns from your feedback!</p>
+    
+    <h4>⏰ Work Hours</h4>
+    <label style="font-size: 11px;">
+      <input type="checkbox" id="workHoursEnabled"> Use work hours (9-5 weekdays) for smarter categorization
+    </label>
+    
+    <h4>🛒 Shopping</h4>
+    <label style="font-size: 11px;">
+      <input type="checkbox" id="shoppingAsUseless" checked> Treat shopping sites as useless
+    </label>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
