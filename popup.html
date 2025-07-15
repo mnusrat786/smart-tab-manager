@@ -64,6 +64,26 @@
       margin: 5px;
       font-size: 11px;
     }
+    .settings-controls {
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    .settings-panel {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .help-text {
+      font-size: 11px;
+      color: #666;
+    }
+    .setting-label {
+      font-size: 11px;
+    }
   </style>
 </head>
 <body>
@@ -87,22 +107,22 @@
     <button class="close-btn" id="closeUseless">Close All Useless Tabs</button>
   </div>
   
-  <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+  <div class="settings-controls">
     <button class="settings-btn" id="showSettings">⚙️ Smart Settings</button>
     <button class="settings-btn" id="resetLearning">🧠 Reset Learning</button>
   </div>
   
-  <div id="settingsPanel" style="display: none; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+  <div id="settingsPanel" class="settings-panel">
     <h4>🤖 AI Training</h4>
-    <p style="font-size: 11px; color: #666;">Click ❌ next to important tabs wrongly categorized, or ✅ next to useless tabs that are actually important. The AI learns from your feedback!</p>
+    <p class="help-text">Click ❌ next to important tabs wrongly categorized, or ✅ next to useless tabs that are actually important. The AI learns from your feedback!</p>
     
     <h4>⏰ Work Hours</h4>
-    <label style="font-size: 11px;">
+    <label class="setting-label">
       <input type="checkbox" id="workHoursEnabled"> Use work hours (9-5 weekdays) for smarter categorization
     </label>
     
     <h4>🛒 Shopping</h4>
-    <label style="font-size: 11px;">
+    <label class="setting-label">
       <input type="checkbox" id="shoppingAsUseless" checked> Treat shopping sites as useless
     </label>
   </div>
