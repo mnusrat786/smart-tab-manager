@@ -132,10 +132,12 @@ async function displayStats() {
     const totalTabs = Object.values(tabs).flat().length;
     const uselessCount = tabs.useless.length;
     const importantCount = tabs.important.length;
+    const unknownCount = tabs.unknown.length;
 
     const funnyMessages = [
         `You have ${uselessCount} tabs that are probably just for fun 😅`,
         `${importantCount} tabs are doing actual work (good job!) 💪`,
+        `${unknownCount} tabs that I'm not sure about 🤔`,
         `Total tabs: ${totalTabs} (that's ${totalTabs > 20 ? 'a lot' : 'manageable'}!) 📊`
     ];
 
@@ -147,6 +149,14 @@ async function displayStats() {
         p.textContent = message;
         p.style.margin = '5px 0';
         statsDiv.appendChild(p);
+    });
+    
+    // Debug info - remove this later
+    console.log('Tab breakdown:', {
+        important: importantCount,
+        useless: uselessCount,
+        unknown: unknownCount,
+        total: totalTabs
     });
 }
 
@@ -208,6 +218,45 @@ async function displayTabs() {
             div.appendChild(text);
             div.appendChild(button);
             uselessDiv.appendChild(div);
+        });
+    }
+
+    // Display unknown tabs
+    const unknownDiv = document.getElementById('unknownTabs');
+    unknownDiv.textContent = '';
+    
+    if (tabs.unknown.length === 0) {
+        const div = document.createElement('div');
+        div.className = 'tab-item';
+        div.textContent = 'All tabs categorized! 🎯';
+        unknownDiv.appendChild(div);
+    } else {
+        tabs.unknown.forEach((tab, index) => {
+            const div = document.createElement('div');
+            div.className = 'tab-item';
+            
+            const text = document.createElement('span');
+            text.textContent = tab.title.substring(0, 35) + '...';
+            
+            // Add both training buttons for unknown tabs
+            const importantBtn = document.createElement('button');
+            importantBtn.className = 'train-btn';
+            importantBtn.textContent = '✅';
+            importantBtn.style.float = 'right';
+            importantBtn.style.marginLeft = '2px';
+            importantBtn.addEventListener('click', () => trainTab(tab.url, tab.title, 'important'));
+            
+            const uselessBtn = document.createElement('button');
+            uselessBtn.className = 'train-btn';
+            uselessBtn.textContent = '❌';
+            uselessBtn.style.float = 'right';
+            uselessBtn.style.marginLeft = '2px';
+            uselessBtn.addEventListener('click', () => trainTab(tab.url, tab.title, 'useless'));
+            
+            div.appendChild(text);
+            div.appendChild(importantBtn);
+            div.appendChild(uselessBtn);
+            unknownDiv.appendChild(div);
         });
     }
 }

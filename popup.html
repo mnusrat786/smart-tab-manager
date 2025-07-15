@@ -27,6 +27,7 @@
     }
     .important { border-left: 4px solid #4CAF50; }
     .useless { border-left: 4px solid #FF9800; }
+    .unknown { border-left: 4px solid #9E9E9E; }
     .tab-item {
       padding: 8px;
       margin: 5px 0;
@@ -105,6 +106,12 @@
     <h3>🎮 Useless Tabs</h3>
     <div id="uselessTabs">Loading...</div>
     <button class="close-btn" id="closeUseless">Close All Useless Tabs</button>
+  </div>
+  
+  <div class="tab-category unknown">
+    <h3>❓ Unknown Tabs</h3>
+    <div id="unknownTabs">Loading...</div>
+    <p class="help-text">These tabs couldn't be categorized. Train the AI by clicking ✅ (important) or ❌ (useless)!</p>
   </div>
   
   <div class="settings-controls">
