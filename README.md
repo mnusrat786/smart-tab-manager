@@ -35,7 +35,7 @@ git clone https://github.com/mnusrat786/smart-tab-manager.git
 3. **Click "Close All Useless Tabs"** - watch the magic happen!
 4. **Train the AI** - click ❌ next to wrong categories to teach it
 
-## 🎮 How to Use
+## How to Use
 
 ### Basic Usage
 - **Click extension icon** → See your tab stats and categories
