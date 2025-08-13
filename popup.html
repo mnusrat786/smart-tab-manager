@@ -25,8 +25,10 @@
       margin: 0 0 10px 0;
       color: #333;
     }
-    .important { border-left: 4px solid #4CAF50; }
-    .useless { border-left: 4px solid #FF9800; }
+    .priority { border-left: 4px solid #4CAF50; }
+    .timesink { border-left: 4px solid #FF5722; }
+    .research { border-left: 4px solid #2196F3; }
+    .zombie { border-left: 4px solid #9C27B0; }
     .unknown { border-left: 4px solid #9E9E9E; }
     .tab-item {
       padding: 8px;
@@ -85,6 +87,61 @@
     .setting-label {
       font-size: 11px;
     }
+    .nudges {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #856404;
+    }
+    .nudge-item {
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    .archive-btn {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .zombie-btn {
+      background: #9C27B0 !important;
+    }
+    .category-btn {
+      background: #666;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 9px;
+      margin: 1px;
+      float: right;
+    }
+    .analytics-chart {
+      margin: 10px 0;
+      font-size: 11px;
+    }
+    .chart-bar {
+      height: 20px;
+      margin: 5px 0;
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chart-label {
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
@@ -93,25 +150,38 @@
   </div>
   
   <div class="stats" id="stats">
-    <h3>📊 Your Tab Stats</h3>
+    <h3>📊 Tab Analytics Dashboard</h3>
     <div id="statsContent">Loading...</div>
+    <div id="behavioralNudges" class="nudges"></div>
   </div>
   
-  <div class="tab-category important">
-    <h3>✅ Important Tabs</h3>
-    <div id="importantTabs">Loading...</div>
+  <div class="tab-category priority">
+    <h3>🔥 Priority Tabs</h3>
+    <div id="priorityTabs">Loading...</div>
   </div>
   
-  <div class="tab-category useless">
-    <h3>🎮 Useless Tabs</h3>
-    <div id="uselessTabs">Loading...</div>
-    <button class="close-btn" id="closeUseless">Close All Useless Tabs</button>
+  <div class="tab-category timesink">
+    <h3>⏰ Time-Sinks</h3>
+    <div id="timesinkTabs">Loading...</div>
+    <button class="close-btn" id="closeTimesinks">Close Time-Sinks</button>
+  </div>
+  
+  <div class="tab-category research">
+    <h3>📥 Research/Read-Later</h3>
+    <div id="researchTabs">Loading...</div>
+    <button class="archive-btn" id="archiveResearch">Archive to Read-Later</button>
+  </div>
+  
+  <div class="tab-category zombie">
+    <h3>🗑️ Zombie Tabs</h3>
+    <div id="zombieTabs">Loading...</div>
+    <button class="close-btn zombie-btn" id="closeZombies">Eliminate Zombies</button>
   </div>
   
   <div class="tab-category unknown">
-    <h3>❓ Unknown Tabs</h3>
+    <h3>❓ Uncategorized</h3>
     <div id="unknownTabs">Loading...</div>
-    <p class="help-text">These tabs couldn't be categorized. Train the AI by clicking ✅ (important) or ❌ (useless)!</p>
+    <p class="help-text">Train the AI by clicking the category buttons!</p>
   </div>
   
   <div class="settings-controls">

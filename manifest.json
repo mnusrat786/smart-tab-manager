@@ -5,7 +5,10 @@
   "description": "AI-powered tab management to organize and optimize your browsing",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "alarms",
+    "notifications",
+    "activeTab"
   ],
   "background": {
     "service_worker": "background.js"

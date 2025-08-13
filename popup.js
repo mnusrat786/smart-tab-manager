@@ -1,37 +1,48 @@
-// Smart tab categorization with learning capabilities
-async function categorizeTab(url, title) {
+// Advanced tab categorization with intelligent auto-tagging
+async function categorizeTab(url, title, tab) {
     try {
         const domain = new URL(url).hostname.replace('www.', '');
         
-        // Get user's custom rules and learned patterns
-        const storage = await chrome.storage.local.get(['customRules', 'learnedPatterns', 'userPreferences']);
-        const customRules = storage.customRules || { important: [], useless: [] };
-        const learnedPatterns = storage.learnedPatterns || { important: [], useless: [] };
+        // Get storage data including tab analytics
+        const storage = await chrome.storage.local.get([
+            'customRules', 'learnedPatterns', 'userPreferences', 
+            'tabAnalytics', 'tabLastAccessed'
+        ]);
+        
+        const customRules = storage.customRules || { priority: [], timesink: [], research: [], zombie: [] };
+        const learnedPatterns = storage.learnedPatterns || { priority: [], timesink: [], research: [], zombie: [] };
         const userPrefs = storage.userPreferences || {};
+        const tabAnalytics = storage.tabAnalytics || {};
+        const tabLastAccessed = storage.tabLastAccessed || {};
         
-        // 1. Check user's custom rules first (highest priority)
-        if (customRules.important.some(d => domain.includes(d))) {
-            return 'important';
-        }
-        if (customRules.useless.some(d => domain.includes(d))) {
-            return 'useless';
-        }
-        
-        // 2. Check learned patterns from user behavior
-        if (learnedPatterns.important.some(pattern => domain.includes(pattern) || title.toLowerCase().includes(pattern))) {
-            return 'important';
-        }
-        if (learnedPatterns.useless.some(pattern => domain.includes(pattern) || title.toLowerCase().includes(pattern))) {
-            return 'useless';
+        // 1. Check for zombie tabs (unused for >7 days)
+        const lastAccessed = tabLastAccessed[tab.id] || Date.now();
+        const daysSinceAccess = (Date.now() - lastAccessed) / (1000 * 60 * 60 * 24);
+        if (daysSinceAccess > 7) {
+            return 'zombie';
         }
         
-        // 3. Smart context-aware categorization
-        const category = await smartCategorize(domain, title, userPrefs);
+        // 2. Check user's custom rules first (highest priority)
+        for (const [category, domains] of Object.entries(customRules)) {
+            if (domains.some(d => domain.includes(d))) {
+                return category;
+            }
+        }
+        
+        // 3. Check learned patterns from user behavior
+        for (const [category, patterns] of Object.entries(learnedPatterns)) {
+            if (patterns.some(pattern => domain.includes(pattern) || title.toLowerCase().includes(pattern))) {
+                return category;
+            }
+        }
+        
+        // 4. Advanced intelligent categorization
+        const category = await intelligentCategorize(domain, title, url, tab, tabAnalytics[tab.id]);
         if (category !== 'unknown') {
             return category;
         }
         
-        // 4. Fallback to basic heuristics
+        // 5. Fallback to basic heuristics
         return basicCategorize(domain, title);
         
     } catch (e) {
@@ -40,7 +51,8 @@ async function categorizeTab(url, title) {
     }
 }
 
-async function smartCategorize(domain, title, userPrefs) {
+// Advanced intelligent categorization with behavioral analysis
+async function intelligentCategorize(domain, title, url, tab, analytics) {
     const text = (title + ' ' + domain).toLowerCase();
     
     // Time-based intelligence
@@ -48,59 +60,102 @@ async function smartCategorize(domain, title, userPrefs) {
     const isWorkHours = now.getHours() >= 9 && now.getHours() <= 17;
     const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
     
-    // Work indicators (stronger during work hours)
-    const workIndicators = [
+    // 🔥 Priority indicators (work/productivity)
+    const priorityDomains = [
+        'gmail.com', 'github.com', 'docs.google.com', 'notion.so', 'slack.com',
+        'trello.com', 'asana.com', 'jira.atlassian.com', 'confluence.atlassian.com',
+        'stackoverflow.com', 'developer.mozilla.org', 'aws.amazon.com'
+    ];
+    
+    const priorityKeywords = [
         'documentation', 'docs', 'api', 'tutorial', 'guide', 'learn', 'course',
-        'github', 'stackoverflow', 'developer', 'programming', 'code', 'admin',
-        'dashboard', 'analytics', 'report', 'meeting', 'calendar', 'email'
+        'admin', 'dashboard', 'analytics', 'report', 'meeting', 'calendar', 'email',
+        'work', 'project', 'task', 'deadline', 'urgent', 'important'
     ];
     
-    // Entertainment indicators (stronger outside work hours)
-    const entertainmentIndicators = [
-        'video', 'game', 'funny', 'meme', 'entertainment', 'social',
-        'watch', 'stream', 'music', 'news', 'sports', 'celebrity'
+    // ⏰ Time-sink indicators (entertainment/social)
+    const timesinkDomains = [
+        'youtube.com', 'netflix.com', 'reddit.com', 'twitter.com', 'x.com',
+        'facebook.com', 'instagram.com', 'tiktok.com', 'twitch.tv', 'discord.com',
+        'pinterest.com', 'linkedin.com'
     ];
     
-    // Shopping indicators
-    const shoppingIndicators = [
-        'buy', 'shop', 'cart', 'price', 'deal', 'sale', 'discount'
+    const timesinkKeywords = [
+        'video', 'watch', 'stream', 'funny', 'meme', 'entertainment', 'social',
+        'game', 'gaming', 'music', 'podcast', 'celebrity', 'gossip', 'viral'
     ];
     
-    let workScore = workIndicators.reduce((score, indicator) => {
-        return score + (text.includes(indicator) ? 1 : 0);
-    }, 0);
+    // 📥 Research/Read-later indicators
+    const researchKeywords = [
+        'article', 'blog', 'news', 'research', 'study', 'paper', 'pdf',
+        'how to', 'tutorial', 'guide', 'tips', 'best practices', 'review'
+    ];
     
-    let entertainmentScore = entertainmentIndicators.reduce((score, indicator) => {
-        return score + (text.includes(indicator) ? 1 : 0);
-    }, 0);
+    const researchDomains = [
+        'medium.com', 'dev.to', 'hackernoon.com', 'techcrunch.com', 'wired.com',
+        'arstechnica.com', 'theverge.com', 'wikipedia.org', 'arxiv.org'
+    ];
     
-    let shoppingScore = shoppingIndicators.reduce((score, indicator) => {
-        return score + (text.includes(indicator) ? 1 : 0);
-    }, 0);
+    // Calculate scores
+    let priorityScore = 0;
+    let timesinkScore = 0;
+    let researchScore = 0;
     
-    // Adjust scores based on context
+    // Domain-based scoring
+    if (priorityDomains.some(d => domain.includes(d))) priorityScore += 3;
+    if (timesinkDomains.some(d => domain.includes(d))) timesinkScore += 3;
+    if (researchDomains.some(d => domain.includes(d))) researchScore += 2;
+    
+    // Keyword-based scoring
+    priorityScore += priorityKeywords.reduce((score, keyword) => 
+        score + (text.includes(keyword) ? 1 : 0), 0);
+    timesinkScore += timesinkKeywords.reduce((score, keyword) => 
+        score + (text.includes(keyword) ? 1 : 0), 0);
+    researchScore += researchKeywords.reduce((score, keyword) => 
+        score + (text.includes(keyword) ? 1 : 0), 0);
+    
+    // Time-based adjustments
     if (isWorkHours && isWeekday) {
-        workScore *= 1.5;
-        entertainmentScore *= 0.7;
+        priorityScore *= 1.5;
+        timesinkScore *= 0.6;
     } else {
-        entertainmentScore *= 1.2;
+        timesinkScore *= 1.3;
+        researchScore *= 1.2;
     }
     
-    // Decision logic
-    if (workScore >= 2) return 'important';
-    if (entertainmentScore >= 2) return 'useless';
-    if (shoppingScore >= 2) return userPrefs.treatShoppingAsUseless !== false ? 'useless' : 'unknown';
+    // Behavioral analysis (if analytics available)
+    if (analytics) {
+        const activeTime = analytics.activeTime || 0;
+        const visitCount = analytics.visitCount || 0;
+        
+        // Long active time on entertainment = time-sink
+        if (activeTime > 600000 && timesinkScore > 0) { // 10+ minutes
+            timesinkScore += 2;
+        }
+        
+        // Frequent visits to work sites = priority
+        if (visitCount > 5 && priorityScore > 0) {
+            priorityScore += 1;
+        }
+    }
+    
+    // Decision logic with thresholds
+    if (priorityScore >= 3) return 'priority';
+    if (timesinkScore >= 3) return 'timesink';
+    if (researchScore >= 2) return 'research';
     
     return 'unknown';
 }
 
 function basicCategorize(domain, title) {
-    // Fallback hardcoded rules (much smaller set)
-    const commonUseless = ['youtube.com', 'facebook.com', 'instagram.com', 'twitter.com', 'x.com', 'tiktok.com'];
-    const commonWork = ['github.com', 'stackoverflow.com', 'docs.google.com'];
+    // Fallback hardcoded rules for new categories
+    const timesinkDomains = ['youtube.com', 'facebook.com', 'instagram.com', 'twitter.com', 'x.com', 'tiktok.com'];
+    const priorityDomains = ['github.com', 'stackoverflow.com', 'docs.google.com', 'gmail.com'];
+    const researchDomains = ['wikipedia.org', 'medium.com', 'dev.to'];
     
-    if (commonUseless.some(d => domain.includes(d))) return 'useless';
-    if (commonWork.some(d => domain.includes(d))) return 'important';
+    if (timesinkDomains.some(d => domain.includes(d))) return 'timesink';
+    if (priorityDomains.some(d => domain.includes(d))) return 'priority';
+    if (researchDomains.some(d => domain.includes(d))) return 'research';
     
     return 'unknown';
 }
@@ -109,159 +164,260 @@ async function loadTabs() {
     try {
         const tabs = await chrome.tabs.query({});
         const categorized = {
-            important: [],
-            useless: [],
+            priority: [],
+            timesink: [],
+            research: [],
+            zombie: [],
             unknown: []
         };
 
+        // Update tab last accessed times
+        const storage = await chrome.storage.local.get(['tabLastAccessed']);
+        const tabLastAccessed = storage.tabLastAccessed || {};
+        
         // Process tabs sequentially to handle async categorization
         for (const tab of tabs) {
-            const category = await categorizeTab(tab.url, tab.title);
+            // Update last accessed time for active tab
+            if (tab.active) {
+                tabLastAccessed[tab.id] = Date.now();
+            }
+            
+            const category = await categorizeTab(tab.url, tab.title, tab);
             categorized[category].push(tab);
         }
+
+        // Save updated access times
+        await chrome.storage.local.set({ tabLastAccessed });
 
         return categorized;
     } catch (e) {
         console.log('Error loading tabs:', e);
-        return { important: [], useless: [], unknown: [] };
+        return { priority: [], timesink: [], research: [], zombie: [], unknown: [] };
     }
 }
 
+// Advanced Analytics Dashboard with behavioral insights
 async function displayStats() {
     const tabs = await loadTabs();
     const totalTabs = Object.values(tabs).flat().length;
-    const uselessCount = tabs.useless.length;
-    const importantCount = tabs.important.length;
+    const priorityCount = tabs.priority.length;
+    const timesinkCount = tabs.timesink.length;
+    const researchCount = tabs.research.length;
+    const zombieCount = tabs.zombie.length;
     const unknownCount = tabs.unknown.length;
 
-    const funnyMessages = [
-        `You have ${uselessCount} tabs that are probably just for fun 😅`,
-        `${importantCount} tabs are doing actual work (good job!) 💪`,
-        `${unknownCount} tabs that I'm not sure about 🤔`,
-        `Total tabs: ${totalTabs} (that's ${totalTabs > 20 ? 'a lot' : 'manageable'}!) 📊`
-    ];
+    // Get analytics data
+    const storage = await chrome.storage.local.get(['tabAnalytics', 'tabLastAccessed', 'weeklyStats']);
+    const tabAnalytics = storage.tabAnalytics || {};
+    const tabLastAccessed = storage.tabLastAccessed || {};
+    const weeklyStats = storage.weeklyStats || {};
+
+    // Calculate oldest tab
+    let oldestTab = null;
+    let oldestDays = 0;
+    Object.entries(tabLastAccessed).forEach(([tabId, timestamp]) => {
+        const days = (Date.now() - timestamp) / (1000 * 60 * 60 * 24);
+        if (days > oldestDays) {
+            oldestDays = days;
+            const tab = Object.values(tabs).flat().find(t => t.id == tabId);
+            if (tab) oldestTab = tab;
+        }
+    });
+
+    // Calculate total time wasted this week
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    const timeWasted = Object.values(tabAnalytics)
+        .filter(analytics => analytics.lastVisit > weekStart.getTime())
+        .reduce((total, analytics) => total + (analytics.activeTime || 0), 0);
 
     const statsDiv = document.getElementById('statsContent');
-    statsDiv.textContent = '';
+    statsDiv.innerHTML = '';
     
-    funnyMessages.forEach((message, index) => {
+    // Real-time stats with humor
+    const statsMessages = [
+        `📊 Total tabs: ${totalTabs} ${totalTabs > 50 ? '(Chrome is crying 😭)' : totalTabs > 20 ? '(Getting heavy 😅)' : '(Manageable! 👍)'}`,
+        `🔥 Priority: ${priorityCount} | ⏰ Time-sinks: ${timesinkCount} | 📥 Research: ${researchCount}`,
+        `🗑️ Zombie tabs: ${zombieCount} ${zombieCount > 0 ? '(Ancient relics!)' : ''}`,
+        oldestTab ? `👴 Oldest tab: "${oldestTab.title.substring(0, 30)}..." (${Math.floor(oldestDays)} days old)` : '',
+        timeWasted > 0 ? `⏱️ Time wasted this week: ${Math.floor(timeWasted / 60000)} minutes` : ''
+    ].filter(msg => msg);
+
+    statsMessages.forEach(message => {
         const p = document.createElement('p');
         p.textContent = message;
         p.style.margin = '5px 0';
+        p.style.fontSize = '11px';
         statsDiv.appendChild(p);
     });
+
+    // Add visual chart
+    const chartDiv = document.createElement('div');
+    chartDiv.className = 'analytics-chart';
+    chartDiv.innerHTML = '<strong>Tab Distribution:</strong>';
     
-    // Debug info - remove this later
-    console.log('Tab breakdown:', {
-        important: importantCount,
-        useless: uselessCount,
-        unknown: unknownCount,
-        total: totalTabs
+    const categories = [
+        { name: '🔥 Priority', count: priorityCount, color: '#4CAF50' },
+        { name: '⏰ Time-sinks', count: timesinkCount, color: '#FF5722' },
+        { name: '📥 Research', count: researchCount, color: '#2196F3' },
+        { name: '🗑️ Zombies', count: zombieCount, color: '#9C27B0' }
+    ];
+
+    categories.forEach(cat => {
+        if (cat.count > 0) {
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+            bar.style.background = cat.color;
+            bar.style.width = `${(cat.count / totalTabs) * 100}%`;
+            
+            const label = document.createElement('div');
+            label.className = 'chart-label';
+            label.textContent = `${cat.name} (${cat.count})`;
+            
+            bar.appendChild(label);
+            chartDiv.appendChild(bar);
+        }
     });
+    
+    statsDiv.appendChild(chartDiv);
+
+    // Display behavioral nudges
+    displayBehavioralNudges(tabs, tabAnalytics);
 }
 
+// Behavioral Nudges - Passive-aggressive alerts with humor
+async function displayBehavioralNudges(tabs, tabAnalytics) {
+    const nudgesDiv = document.getElementById('behavioralNudges');
+    nudgesDiv.innerHTML = '';
+    
+    const nudges = [];
+    
+    // Count social media reopens
+    const socialSites = ['facebook.com', 'twitter.com', 'x.com', 'instagram.com', 'reddit.com'];
+    const socialTabs = tabs.timesink.filter(tab => 
+        socialSites.some(site => tab.url.includes(site))
+    );
+    
+    if (socialTabs.length >= 3) {
+        nudges.push(`🤦‍♂️ You have ${socialTabs.length} social media tabs open. Productivity has left the chat.`);
+    }
+    
+    // YouTube addiction check
+    const youtubeTabs = tabs.timesink.filter(tab => tab.url.includes('youtube.com'));
+    if (youtubeTabs.length >= 5) {
+        nudges.push(`📺 ${youtubeTabs.length} YouTube tabs? That's a whole Netflix series worth of procrastination!`);
+    }
+    
+    // Zombie tab shame
+    if (tabs.zombie.length > 0) {
+        nudges.push(`🧟‍♂️ ${tabs.zombie.length} zombie tabs detected. These tabs are so old, they remember Internet Explorer.`);
+    }
+    
+    // Memory usage warning
+    const totalTabs = Object.values(tabs).flat().length;
+    if (totalTabs > 30) {
+        nudges.push(`💾 ${totalTabs} tabs are eating your RAM like it's a buffet. Your computer is crying.`);
+    }
+    
+    // Research tab hoarding
+    if (tabs.research.length > 10) {
+        nudges.push(`📚 ${tabs.research.length} research tabs? Either you're writing a PhD thesis or you're a professional procrastinator.`);
+    }
+    
+    // Display nudges
+    if (nudges.length > 0) {
+        nudges.forEach(nudge => {
+            const div = document.createElement('div');
+            div.className = 'nudge-item';
+            div.textContent = nudge;
+            nudgesDiv.appendChild(div);
+        });
+    }
+}
+
+// Display tabs in new 4-category system with training buttons
 async function displayTabs() {
     const tabs = await loadTabs();
 
-    // Display important tabs
-    const importantDiv = document.getElementById('importantTabs');
-    importantDiv.textContent = '';
-    
-    if (tabs.important.length === 0) {
+    // Helper function to create tab display
+    function createTabDisplay(tab, category, containerDiv) {
         const div = document.createElement('div');
         div.className = 'tab-item';
-        div.textContent = 'No important tabs found 🤔';
-        importantDiv.appendChild(div);
-    } else {
-        tabs.important.forEach((tab, index) => {
-            const div = document.createElement('div');
-            div.className = 'tab-item';
-            
-            const text = document.createElement('span');
-            text.textContent = tab.title.substring(0, 40) + '...';
-            
-            const button = document.createElement('button');
-            button.className = 'train-btn';
-            button.textContent = '❌';
-            button.style.float = 'right';
-            button.addEventListener('click', () => trainTab(tab.url, tab.title, 'useless'));
-            
-            div.appendChild(text);
-            div.appendChild(button);
-            importantDiv.appendChild(div);
+        
+        const text = document.createElement('span');
+        text.textContent = tab.title.substring(0, 35) + '...';
+        text.title = tab.title; // Show full title on hover
+        
+        // Add category training buttons
+        const categories = [
+            { name: 'priority', emoji: '🔥', label: 'Priority' },
+            { name: 'timesink', emoji: '⏰', label: 'Time-sink' },
+            { name: 'research', emoji: '📥', label: 'Research' },
+            { name: 'zombie', emoji: '🗑️', label: 'Zombie' }
+        ];
+        
+        categories.forEach(cat => {
+            if (cat.name !== category) { // Don't show current category button
+                const button = document.createElement('button');
+                button.className = 'category-btn';
+                button.textContent = cat.emoji;
+                button.title = `Mark as ${cat.label}`;
+                button.addEventListener('click', () => trainTab(tab.url, tab.title, cat.name));
+                div.appendChild(button);
+            }
         });
+        
+        div.appendChild(text);
+        containerDiv.appendChild(div);
     }
 
-    // Display useless tabs
-    const uselessDiv = document.getElementById('uselessTabs');
-    uselessDiv.textContent = '';
-    
-    if (tabs.useless.length === 0) {
-        const div = document.createElement('div');
-        div.className = 'tab-item';
-        div.textContent = 'No useless tabs found! 🎉';
-        uselessDiv.appendChild(div);
+    // Display Priority tabs
+    const priorityDiv = document.getElementById('priorityTabs');
+    priorityDiv.innerHTML = '';
+    if (tabs.priority.length === 0) {
+        priorityDiv.innerHTML = '<div class="tab-item">No priority tabs found 🤔</div>';
     } else {
-        tabs.useless.forEach((tab, index) => {
-            const div = document.createElement('div');
-            div.className = 'tab-item';
-            
-            const text = document.createElement('span');
-            text.textContent = tab.title.substring(0, 40) + '...';
-            
-            const button = document.createElement('button');
-            button.className = 'train-btn';
-            button.textContent = '✅';
-            button.style.float = 'right';
-            button.addEventListener('click', () => trainTab(tab.url, tab.title, 'important'));
-            
-            div.appendChild(text);
-            div.appendChild(button);
-            uselessDiv.appendChild(div);
-        });
+        tabs.priority.forEach(tab => createTabDisplay(tab, 'priority', priorityDiv));
     }
 
-    // Display unknown tabs
+    // Display Time-sink tabs
+    const timesinkDiv = document.getElementById('timesinkTabs');
+    timesinkDiv.innerHTML = '';
+    if (tabs.timesink.length === 0) {
+        timesinkDiv.innerHTML = '<div class="tab-item">No time-sinks detected! 🎉</div>';
+    } else {
+        tabs.timesink.forEach(tab => createTabDisplay(tab, 'timesink', timesinkDiv));
+    }
+
+    // Display Research tabs
+    const researchDiv = document.getElementById('researchTabs');
+    researchDiv.innerHTML = '';
+    if (tabs.research.length === 0) {
+        researchDiv.innerHTML = '<div class="tab-item">No research tabs found 📚</div>';
+    } else {
+        tabs.research.forEach(tab => createTabDisplay(tab, 'research', researchDiv));
+    }
+
+    // Display Zombie tabs
+    const zombieDiv = document.getElementById('zombieTabs');
+    zombieDiv.innerHTML = '';
+    if (tabs.zombie.length === 0) {
+        zombieDiv.innerHTML = '<div class="tab-item">No zombie tabs! Fresh browsing! 🧟‍♂️</div>';
+    } else {
+        tabs.zombie.forEach(tab => createTabDisplay(tab, 'zombie', zombieDiv));
+    }
+
+    // Display Unknown tabs
     const unknownDiv = document.getElementById('unknownTabs');
-    unknownDiv.textContent = '';
-    
+    unknownDiv.innerHTML = '';
     if (tabs.unknown.length === 0) {
-        const div = document.createElement('div');
-        div.className = 'tab-item';
-        div.textContent = 'All tabs categorized! 🎯';
-        unknownDiv.appendChild(div);
+        unknownDiv.innerHTML = '<div class="tab-item">All tabs categorized! 🎯</div>';
     } else {
-        tabs.unknown.forEach((tab, index) => {
-            const div = document.createElement('div');
-            div.className = 'tab-item';
-            
-            const text = document.createElement('span');
-            text.textContent = tab.title.substring(0, 35) + '...';
-            
-            // Add both training buttons for unknown tabs
-            const importantBtn = document.createElement('button');
-            importantBtn.className = 'train-btn';
-            importantBtn.textContent = '✅';
-            importantBtn.style.float = 'right';
-            importantBtn.style.marginLeft = '2px';
-            importantBtn.addEventListener('click', () => trainTab(tab.url, tab.title, 'important'));
-            
-            const uselessBtn = document.createElement('button');
-            uselessBtn.className = 'train-btn';
-            uselessBtn.textContent = '❌';
-            uselessBtn.style.float = 'right';
-            uselessBtn.style.marginLeft = '2px';
-            uselessBtn.addEventListener('click', () => trainTab(tab.url, tab.title, 'useless'));
-            
-            div.appendChild(text);
-            div.appendChild(importantBtn);
-            div.appendChild(uselessBtn);
-            unknownDiv.appendChild(div);
-        });
+        tabs.unknown.forEach(tab => createTabDisplay(tab, 'unknown', unknownDiv));
     }
 }
 
-// Training function for user feedback
+// Training function for user feedback - Updated for 4-category system
 async function trainTab(url, title, newCategory) {
     try {
         const domain = new URL(url).hostname.replace('www.', '');
@@ -271,13 +427,17 @@ async function trainTab(url, title, newCategory) {
         
         // Also add to custom rules for this domain
         const storage = await chrome.storage.local.get(['customRules']);
-        const customRules = storage.customRules || { important: [], useless: [] };
+        const customRules = storage.customRules || { priority: [], timesink: [], research: [], zombie: [] };
         
         const domainPattern = domain.split('.').slice(-2).join('.');
         
-        // Remove from opposite category if it exists
-        const oppositeCategory = newCategory === 'important' ? 'useless' : 'important';
-        customRules[oppositeCategory] = customRules[oppositeCategory].filter(d => d !== domainPattern);
+        // Remove from all other categories
+        const allCategories = ['priority', 'timesink', 'research', 'zombie'];
+        allCategories.forEach(category => {
+            if (category !== newCategory) {
+                customRules[category] = customRules[category].filter(d => d !== domainPattern);
+            }
+        });
         
         // Add to new category
         if (!customRules[newCategory].includes(domainPattern)) {
@@ -298,14 +458,19 @@ async function trainTab(url, title, newCategory) {
     }
 }
 
-// Function to learn from user behavior
+// Function to learn from user behavior - Updated for 4-category system
 async function learnFromUserAction(domain, title, category) {
     const storage = await chrome.storage.local.get(['learnedPatterns']);
-    const learnedPatterns = storage.learnedPatterns || { important: [], useless: [] };
+    const learnedPatterns = storage.learnedPatterns || { priority: [], timesink: [], research: [], zombie: [] };
     
     // Extract meaningful patterns
     const domainPattern = domain.split('.').slice(-2).join('.'); // Get main domain
     const titleWords = title.toLowerCase().split(' ').filter(word => word.length > 3);
+    
+    // Initialize category if it doesn't exist
+    if (!learnedPatterns[category]) {
+        learnedPatterns[category] = [];
+    }
     
     // Add domain pattern
     if (!learnedPatterns[category].includes(domainPattern)) {
@@ -343,23 +508,88 @@ function showTrainingFeedback(domain, category) {
     setTimeout(() => feedback.remove(), 3000);
 }
 
-// Close useless tabs functionality
+// Automation Functions - Smart Actions
+async function closeTimesinkTabs() {
+    const tabs = await loadTabs();
+    const tabIds = tabs.timesink.map(tab => tab.id);
+    
+    if (tabIds.length > 0) {
+        await chrome.tabs.remove(tabIds);
+        showActionFeedback(`🎯 Closed ${tabIds.length} time-sink tabs! Focus restored.`);
+        displayTabs();
+        displayStats();
+    }
+}
+
+async function closeZombieTabs() {
+    const tabs = await loadTabs();
+    const tabIds = tabs.zombie.map(tab => tab.id);
+    
+    if (tabIds.length > 0) {
+        await chrome.tabs.remove(tabIds);
+        showActionFeedback(`🧟‍♂️ Eliminated ${tabIds.length} zombie tabs! Your browser feels lighter.`);
+        displayTabs();
+        displayStats();
+    }
+}
+
+async function archiveResearchTabs() {
+    const tabs = await loadTabs();
+    const researchTabs = tabs.research;
+    
+    if (researchTabs.length > 0) {
+        // Store URLs for later (could integrate with Pocket/Raindrop.io)
+        const storage = await chrome.storage.local.get(['archivedTabs']);
+        const archivedTabs = storage.archivedTabs || [];
+        
+        researchTabs.forEach(tab => {
+            archivedTabs.push({
+                url: tab.url,
+                title: tab.title,
+                archivedAt: Date.now()
+            });
+        });
+        
+        await chrome.storage.local.set({ archivedTabs });
+        
+        // Close the tabs
+        const tabIds = researchTabs.map(tab => tab.id);
+        await chrome.tabs.remove(tabIds);
+        
+        showActionFeedback(`📥 Archived ${tabIds.length} research tabs! Check settings to view archived items.`);
+        displayTabs();
+        displayStats();
+    }
+}
+
+function showActionFeedback(message) {
+    const feedback = document.createElement('div');
+    feedback.style.position = 'fixed';
+    feedback.style.top = '10px';
+    feedback.style.right = '10px';
+    feedback.style.background = '#2196F3';
+    feedback.style.color = 'white';
+    feedback.style.padding = '10px';
+    feedback.style.borderRadius = '4px';
+    feedback.style.fontSize = '12px';
+    feedback.style.zIndex = '1000';
+    feedback.style.maxWidth = '250px';
+    feedback.textContent = message;
+    document.body.appendChild(feedback);
+    
+    setTimeout(() => feedback.remove(), 4000);
+}
+
+// Event Handlers - Updated for new 4-category system
 document.addEventListener('DOMContentLoaded', () => {
     displayStats();
     displayTabs();
     loadSettings();
     
-    // Close useless tabs button
-    document.getElementById('closeUseless').addEventListener('click', async () => {
-        const tabs = await loadTabs();
-        const tabIds = tabs.useless.map(tab => tab.id);
-
-        if (tabIds.length > 0) {
-            await chrome.tabs.remove(tabIds);
-            displayTabs();
-            displayStats();
-        }
-    });
+    // New category-specific action buttons
+    document.getElementById('closeTimesinks').addEventListener('click', closeTimesinkTabs);
+    document.getElementById('closeZombies').addEventListener('click', closeZombieTabs);
+    document.getElementById('archiveResearch').addEventListener('click', archiveResearchTabs);
     
     // Settings panel toggle
     document.getElementById('showSettings').addEventListener('click', () => {
@@ -367,27 +597,16 @@ document.addEventListener('DOMContentLoaded', () => {
         panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     });
     
-    // Reset learning data
+    // Reset learning data - Updated for new categories
     document.getElementById('resetLearning').addEventListener('click', async () => {
         await chrome.storage.local.set({
-            customRules: { important: [], useless: [] },
-            learnedPatterns: { important: [], useless: [] }
+            customRules: { priority: [], timesink: [], research: [], zombie: [] },
+            learnedPatterns: { priority: [], timesink: [], research: [], zombie: [] },
+            tabAnalytics: {},
+            tabLastAccessed: {}
         });
         
-        // Show feedback
-        const feedback = document.createElement('div');
-        feedback.style.position = 'fixed';
-        feedback.style.top = '10px';
-        feedback.style.right = '10px';
-        feedback.style.background = '#FF9800';
-        feedback.style.color = 'white';
-        feedback.style.padding = '10px';
-        feedback.style.borderRadius = '4px';
-        feedback.style.fontSize = '12px';
-        feedback.style.zIndex = '1000';
-        feedback.textContent = '🧠 AI learning reset! Start training again.';
-        document.body.appendChild(feedback);
-        setTimeout(() => feedback.remove(), 3000);
+        showActionFeedback('🧠 AI learning reset! All patterns cleared. Start training again.');
         
         // Refresh display
         displayTabs();
