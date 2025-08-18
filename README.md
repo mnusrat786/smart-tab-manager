@@ -1,38 +1,38 @@
-# 🧠 Smart Tab Manager - The Ultimate Tab Chaos Solution!
+# Smart Tab Manager - The Ultimate Tab Chaos Solution!
 
 **The Problem:** You have 87 tabs open. Chrome is crying. Your RAM is screaming. Half are YouTube videos from 2 weeks ago, and you can't find that one important work doc. Sound familiar?
 
 **The Solution:** This isn't just another tab manager - it's your witty productivity coach! Uses advanced AI to automatically categorize tabs into 4 smart categories, roasts your browsing habits with humor, and automates cleanup so you can focus on what matters.
 
-## 🎯 What Makes This Extension Unique
+## What Makes This Extension Unique
 
-### 📌 **4-Category Intelligent Auto-Tagging**
-- **🔥 Priority** - Gmail, GitHub, Google Docs, work dashboards
-- **⏰ Time-Sinks** - YouTube, Netflix, Reddit, social media rabbit holes  
-- **📥 Research/Read-Later** - Articles, tutorials, PDFs you'll "definitely read"
-- **🗑️ Zombie Tabs** - Ancient tabs unused for 7+ days (RIP Internet Explorer era)
+###  **4-Category Intelligent Auto-Tagging**
+- ** Priority** - Gmail, GitHub, Google Docs, work dashboards
+- ** Time-Sinks** - YouTube, Netflix, Reddit, social media rabbit holes  
+- ** Research/Read-Later** - Articles, tutorials, PDFs you'll "definitely read"
+- **🗑 Zombie Tabs** - Ancient tabs unused for 7+ days (RIP Internet Explorer era)
 
-### 📊 **Advanced Analytics Dashboard**
+###  **Advanced Analytics Dashboard**
 - **Real-time stats with attitude**: "87 tabs (Chrome is crying 😭)"
 - **Behavioral insights**: "You reopened Facebook 12 times today. Seek help."
 - **Time tracking**: "6 hours wasted on Twitter this week"
 - **Visual charts**: See your procrastination patterns in living color
 - **Oldest tab shame**: "CNN News from 14 days ago - that's ancient history!"
 
-### 🤖 **Passive-Aggressive Behavioral Nudges**
-- "🤦‍♂️ 5 social media tabs open. Productivity has left the chat."
-- "📺 8 YouTube tabs? That's a Netflix series worth of procrastination!"
-- "🧟‍♂️ These zombie tabs are so old, they remember Internet Explorer."
-- "💾 50+ tabs eating RAM like it's a buffet. Your computer is crying."
+###  **Passive-Aggressive Behavioral Nudges**
+- " 5 social media tabs open. Productivity has left the chat."
+- " 8 YouTube tabs? That's a Netflix series worth of procrastination!"
+- " These zombie tabs are so old, they remember Internet Explorer."
+- " 50+ tabs eating RAM like it's a buffet. Your computer is crying."
 
-### ⚡ **Smart Automation (Set & Forget)**
+###  **Smart Automation (Set & Forget)**
 - **Auto-close Time-Sinks** - One-click entertainment tab cleanup
 - **Zombie Elimination** - Weekly Friday 5PM automatic cleanup
 - **Research Archiving** - Save read-later tabs and close them
 - **Procrastination Detection** - Warns during work hours on social media
 - **Memory Optimization** - Suggests cleanup when RAM usage gets heavy
 
-## 🚀 Quick Start (5 minutes)
+## Quick Start (5 minutes)
 
 ### Step 1: Install the Extension
 ```bash
@@ -54,7 +54,7 @@ git clone https://github.com/mnusrat786/smart-tab-manager.git
 3. **Click "Close All Useless Tabs"** - watch the magic happen!
 4. **Train the AI** - click ❌ next to wrong categories to teach it
 
-## 🎮 How to Use the Advanced Features
+## How to Use the Advanced Features
 
 ### 🎯 **New 4-Category System**
 - **🔥 Priority Tabs** - Your important work stuff (Gmail, GitHub, docs)
@@ -62,27 +62,27 @@ git clone https://github.com/mnusrat786/smart-tab-manager.git
 - **📥 Research Tabs** - Articles and tutorials to read later
 - **🗑️ Zombie Tabs** - Ancient tabs unused for 7+ days
 
-### 🚀 **One-Click Actions**
+###  **One-Click Actions**
 - **"Close Time-Sinks"** → Eliminate entertainment distractions instantly
 - **"Eliminate Zombies"** → Remove ancient unused tabs
 - **"Archive to Read-Later"** → Save research tabs and close them
 - **Category Training Buttons** → Click 🔥⏰📥🗑️ to teach the AI
 
-### 📊 **Analytics Dashboard**
+### **Analytics Dashboard**
 - **Tab Distribution Chart** → Visual breakdown of your browsing habits
 - **Behavioral Insights** → Funny stats about your procrastination patterns
 - **Time Tracking** → See how much time you waste on social media
 - **Memory Usage Warnings** → Know when your browser is overloaded
 
-### 🤖 **Smart Automation**
+###  **Smart Automation**
 - **Weekly Zombie Cleanup** → Automatic Friday 5PM cleanup (configurable)
 - **Procrastination Alerts** → Warns when you're on social media during work hours
 - **Smart Learning** → Remembers your corrections and improves over time
 - **Work Hours Intelligence** → Different categorization during 9-5 weekdays
 
-## 🤖 How the Advanced AI Works
+##  How the Advanced AI Works
 
-### 🧠 **Multi-Layer Intelligence System**
+### **Multi-Layer Intelligence System**
 - **Domain Recognition** - 50+ hardcoded patterns for instant categorization
 - **Content Analysis** - Scans page titles, headings, meta descriptions, and structure
 - **Behavioral Tracking** - Monitors scroll, clicks, time spent, engagement patterns
@@ -90,7 +90,7 @@ git clone https://github.com/mnusrat786/smart-tab-manager.git
 - **User Learning** - Remembers corrections and builds custom pattern library
 - **Structural Analysis** - Detects videos, code blocks, comments, shopping elements
 
-### 🎯 **Smart Categorization Examples**
+### **Smart Categorization Examples**
 ```javascript
 // Priority Detection
 GitHub + "documentation" + work hours = 🔥 Priority
@@ -108,7 +108,7 @@ Wikipedia + multiple headings = 📥 Research
 Any tab unused for 7+ days = 🗑️ Zombie
 ```
 
-### 🔄 **Continuous Learning**
+### **Continuous Learning**
 - **Pattern Recognition** - Learns from your category corrections
 - **Domain Rules** - Builds custom rules based on your behavior  
 - **Keyword Learning** - Remembers title words you associate with categories
@@ -128,14 +128,14 @@ smart-tab-manager/
     └── specs/         # Feature specifications and requirements
 ```
 
-### 🚀 **Development Features**
+### **Development Features**
 - **Manifest V3** - Latest Chrome extension standards
 - **Service Worker** - Background analytics and automation
 - **Advanced Storage** - Multi-layer data persistence
 - **Real-time Analytics** - Live behavioral tracking
 - **Automation Hooks** - Scheduled cleanup and notifications
 
-### 🧪 **Testing the Advanced Features**
+### **Testing the Advanced Features**
 ```bash
 # 1. Load extension in Chrome
 chrome://extensions/ → Developer mode → Load unpacked
@@ -153,15 +153,15 @@ chrome://extensions/ → Developer mode → Load unpacked
 - Verify weekly cleanup scheduling
 ```
 
-### 🔧 **Key Files & Their Advanced Features**
+### **Key Files & Their Advanced Features**
 - **`popup.js`** - 4-category system, analytics dashboard, behavioral nudges
 - **`background.js`** - Tab tracking, automation alarms, behavioral analysis
 - **`content.js`** - Enhanced page analysis, engagement tracking, procrastination detection
 - **`manifest.json`** - Permissions for alarms, notifications, advanced tab access
 
-## 🎯 Current Status
+## Current Status
 
-### ✅ **Fully Implemented Features:**
+### **Fully Implemented Features:**
 - **4-Category Smart Categorization** (Priority, Time-Sinks, Research, Zombies)
 - **Advanced Analytics Dashboard** with visual charts and behavioral insights
 - **Passive-Aggressive Behavioral Nudges** with humor
@@ -174,21 +174,21 @@ chrome://extensions/ → Developer mode → Load unpacked
 - **Zombie Tab Detection** (7+ days unused)
 - **Memory Usage Warnings** and optimization suggestions
 
-### � **Coming Soon:**
+###  **Coming Soon:**
 - **Export/Import** of learned preferences and rules
 - **Team Sharing** of categorization rules across workspaces
 - **Integration APIs** for Pocket, Raindrop.io, Notion
 - **Voice Commands** ("Hey Chrome, close all social media tabs")
 - **Mobile Companion** app for cross-device tab sync
 
-### 💡 **Advanced Ideas:**
+### **Advanced Ideas:**
 - **AI-Powered Summaries** of archived research tabs
 - **Productivity Score** based on browsing patterns
 - **Focus Mode** that blocks time-sink sites during work hours
 - **Tab Clustering** by project or topic using ML
 - **Browser Performance Optimization** based on tab usage patterns
 
-## 🤔 Why This Extension is Different
+##  Why This Extension is Different
 
 **Real Talk:** We all have tab addiction. But instead of judging you, this extension becomes your witty productivity coach that actually makes tab management fun.
 
@@ -201,14 +201,14 @@ chrome://extensions/ → Developer mode → Load unpacked
 
 **The Goal:** Transform tab chaos into organized productivity while having a laugh at your browsing habits. Because if you're going to procrastinate, at least do it with style! 😄
 
-## 🐛 Issues or Ideas?
+## Issues or Ideas?
 
 - **Found a bug?** Open an issue with screenshots
 - **Have an idea?** Suggest new features
 - **Want to contribute?** PRs welcome!
 - **Just want to say hi?** Star the repo! ⭐
 
-## 📄 License
+## License
 
 MIT License - Use it, modify it, share it, whatever makes you happy!
 
