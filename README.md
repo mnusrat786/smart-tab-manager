@@ -13,7 +13,7 @@
 - **🗑 Zombie Tabs** - Ancient tabs unused for 7+ days (RIP Internet Explorer era)
 
 ###  **Advanced Analytics Dashboard**
-- **Real-time stats with attitude**: "87 tabs (Chrome is crying 😭)"
+- **Real-time stats with attitude**: "87 tabs (Chrome is crying )"
 - **Behavioral insights**: "You reopened Facebook 12 times today. Seek help."
 - **Time tracking**: "6 hours wasted on Twitter this week"
 - **Visual charts**: See your procrastination patterns in living color
@@ -52,7 +52,7 @@ git clone https://github.com/mnusrat786/smart-tab-manager.git
 1. **Open some tabs** - mix of YouTube, work docs, social media
 2. **Click the extension icon** - see your tabs categorized instantly
 3. **Click "Close All Useless Tabs"** - watch the magic happen!
-4. **Train the AI** - click ❌ next to wrong categories to teach it
+4. **Train the AI** - click next to wrong categories to teach it
 
 ## How to Use the Advanced Features
 
@@ -214,4 +214,3 @@ MIT License - Use it, modify it, share it, whatever makes you happy!
 
 ---
 
-**Made with ❤️ and way too many browser tabs**
